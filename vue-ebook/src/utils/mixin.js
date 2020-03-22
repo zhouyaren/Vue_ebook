@@ -83,11 +83,13 @@ export const ebookMixin = {
     },
     refreshLocation () { // 保存了阅读进度
       const currentLocation = this.currentBook.rendition.currentLocation()
-      const startCfi = currentLocation.start.cfi
-      saveLocation(this.fileName, startCfi)
-      const progress = this.currentBook.locations.percentageFromCfi(startCfi)
-      this.setProgress(Math.floor(progress * 100))
-      this.setSection(currentLocation.start.index)
+      if (currentLocation && currentLocation.start) {
+        const startCfi = currentLocation.start.cfi
+        saveLocation(this.fileName, startCfi)
+        const progress = this.currentBook.locations.percentageFromCfi(startCfi)
+        this.setProgress(Math.floor(progress * 100))
+        this.setSection(currentLocation.start.index)
+      }
     },
     hideTitleAndMenu () {
       // this.$store.dispatch('setMenuVisible', false)
