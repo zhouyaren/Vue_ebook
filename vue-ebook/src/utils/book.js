@@ -1,3 +1,5 @@
+import { getReadTime } from './localStorage'
+
 export const FONT_SIZE_LIST = [
   { fontSize: 12 },
   { fontSize: 14 },
@@ -102,4 +104,17 @@ export function removeAllCss () {
   removeCss('http://localhost:9001/theme/theme_eye.css')
   removeCss('http://localhost:9001/theme/theme_gold.css')
   removeCss('http://localhost:9001/theme/theme_night.css')
+}
+
+export function getReadTimeByMinute (fileName) {
+  const readTime = getReadTime(fileName)
+  if (!readTime) {
+    return 0
+  } else {
+    return Math.ceil(readTime / 60)
+  }
+}
+
+export function flatten (array) { // 把树形元素变成一维数组，[].concat()
+  return [].concat(...array.map(item => [].concat(item, ...flatten(item.subitems))))
 }

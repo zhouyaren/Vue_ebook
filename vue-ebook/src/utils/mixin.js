@@ -1,5 +1,5 @@
 import { mapGetters, mapActions } from 'vuex'
-import { addCss, removeAllCss, themeList } from './book'
+import { addCss, removeAllCss, themeList, getReadTimeByMinute } from './book'
 import { saveLocation } from './localStorage'
 
 export const ebookMixin = {
@@ -88,6 +88,15 @@ export const ebookMixin = {
       const progress = this.currentBook.locations.percentageFromCfi(startCfi)
       this.setProgress(Math.floor(progress * 100))
       this.setSection(currentLocation.start.index)
+    },
+    hideTitleAndMenu () {
+      // this.$store.dispatch('setMenuVisible', false)
+      this.setMenuVisible(false)
+      this.setSettingVisible(-1)
+      this.setFontFamilyVisible(false)
+    },
+    getReadTimeText () { // 获取时间文本
+      return this.$t('book.haveRead').replace('$1', getReadTimeByMinute(this.fileName))
     },
     display (target) { // 这个方法不知道为什么不能用
       if (target) {

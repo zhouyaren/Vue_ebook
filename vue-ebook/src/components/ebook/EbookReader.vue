@@ -17,6 +17,7 @@ import {
   getLocation
   // saveLocation
 } from '../../utils/localStorage'
+import { flatten } from '../../utils/book'
 global.ePub = Epub
 export default {
   mixins: [ebookMixin],
@@ -44,12 +45,6 @@ export default {
         this.setFontFamilyVisible(false)
       }
       this.setMenuVisible(!this.menuVisible)
-    },
-    hideTitleAndMenu () {
-      // this.$store.dispatch('setMenuVisible', false)
-      this.setMenuVisible(false)
-      this.setSettingVisible(-1)
-      this.setFontFamilyVisible(false)
     },
     initFontSize () {
       var fontsize = getFontSize(this.fileName)
@@ -94,6 +89,7 @@ export default {
         this.initFontFamily()
         this.initGlobalStyle()
         this.refreshLocation()
+        this.parseBook()
       })
       this.rendition.hooks.content.register(contents => {
         Promise.all([
@@ -126,6 +122,30 @@ export default {
         }
         event.preventDefault() // 禁用原来的方法
         event.stopPropagation() // 禁止原来的事件传播
+      })
+    },
+    parseBook () { // 获取封面的图片链接和图书基本信息
+      this.book.loaded.cover.then(cover => {
+        this.book.archive.createUrl(cover).then(url => {
+          this.setCover(url)
+        })
+      })
+      this.book.loaded.metadata.then(metadate => {
+        this.setMetadata(metadate)
+      })
+      this.book.loaded.navigation.then(nav => {
+        const navItem = flatten(nav.toc)
+        function find (item, level = 0) {
+          if (!item.parent) {
+            return level
+          } else {
+            return find(navItem.filter(parentItem => parentItem.id === item.parent)[0], ++level)
+          }
+        }
+        navItem.forEach(item => {
+          item.level = find(item)
+        })
+        this.setNavigation(navItem)
       })
     },
     initEpub () {
