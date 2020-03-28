@@ -1,6 +1,6 @@
 import { mapGetters, mapActions } from 'vuex'
 import { addCss, removeAllCss, themeList, getReadTimeByMinute } from './book'
-import { saveLocation } from './localStorage'
+import { getBookmark, saveLocation } from './localStorage'
 
 export const ebookMixin = {
   computed: {
@@ -89,6 +89,16 @@ export const ebookMixin = {
         const progress = this.currentBook.locations.percentageFromCfi(startCfi)
         this.setProgress(Math.floor(progress * 100))
         this.setSection(currentLocation.start.index)
+        const bookmark = getBookmark(this.fileName)
+        if (bookmark) {
+          if (bookmark.some(item => item.cfi === startCfi)){
+            this.setIsBookmark(true)
+          } else {
+            this.setIsBookmark(false)
+          }
+        } else {
+          this.setIsBookmark(false)
+        }
       }
     },
     hideTitleAndMenu () {
