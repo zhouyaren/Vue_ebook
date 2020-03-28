@@ -1,6 +1,10 @@
 <template>
   <div class="ebook-reader">
       <div id="read"></div>
+    <div class="ebook-reader-mask"
+    @click="onMaskClick"
+    @touchmove="move"
+    @touchend="End"></div>
   </div>
 </template>
 
@@ -22,6 +26,32 @@ global.ePub = Epub
 export default {
   mixins: [ebookMixin],
   methods: {
+    move (e) {
+      let offsetY = 0
+      if (this.firstOffsetY) {
+        offsetY = e.changedTouches[0].clientY - this.firstOffsetY
+        this.setOffsetY(offsetY)
+      } else { // firstOffsetY不存在则把刚开始的点放在 e.changedTouches[0].clientY
+        this.firstOffsetY = e.changedTouches[0].clientY
+      }
+      e.preventDefault()
+      e.stopPropagation()
+    },
+    End (e) {
+      this.setOffsetY(0)
+      this.firstOffsetY = null
+    },
+    onMaskClick (e) {
+      const offsetx = e.offsetX
+      const width = window.innerWidth
+      if (offsetx > 0 && offsetx < 0.3 * width) {
+        this.prevPage()
+      } else if (offsetx > 0 && offsetx > 0.7 * width) {
+        this.nextPage()
+      } else {
+        this.toggleTitleAndMenu()
+      }
+    },
     prevPage () {
       if (this.rendition) {
         this.rendition.prev().then(() => {
@@ -154,7 +184,7 @@ export default {
       this.book = new Epub(url)
       this.setCurrentBook(this.book)
       this.initRendition()
-      this.initGesture()
+      // this.initGesture() // 待会要删除这个方法
       this.book.ready.then(() => {
         // 简单的分页
         return this.book.locations.generate(750 * (window.innerWidth / 375) * (getFontSize(this.fileName / 16)))
@@ -176,4 +206,18 @@ export default {
 
 <style lang="scss" rel="stylesheet/scss" scoped>
  @import "../../assets/styles/global";
+.ebook-reader {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  .ebook-reader-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    z-index: 150;
+    width: 100%;
+    height: 100%;
+  }
+}
 </style>
