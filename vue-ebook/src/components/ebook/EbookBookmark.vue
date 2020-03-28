@@ -1,33 +1,99 @@
 <template>
-    <div class="ebook-bookmark">
+    <div class="ebook-bookmark" ref="bookmark">
       <div class="ebook-bookmark-text-wrapper">
-        <div class="ebook-bookmark-down-wrapper">
+        <div class="ebook-bookmark-down-wrapper" ref="iconDown">
           <span class="icon-down"></span>
         </div>
         <div class="ebook-bookmark-text">{{text}}</div>
       </div>
       <div class="ebook-bookmark-icon-wrapper">
-        <book-mark :color="'red'" :width="15" :height="35"></book-mark>
+        <book-mark :color="color" :width="15" :height="35"></book-mark>
       </div>
     </div>
 </template>
 
 <script>
 import BookMark from '../common/BookMark'
+import { realPx } from '../../utils/utils'
+import { ebookMixin } from '../../utils/mixin'
+
 const BLUE = '#346cbc'
 const WHITE = '#fff'
 export default {
   name: 'EbookBookmark',
+  mixins: [ebookMixin],
   components: {
     BookMark
   },
+  computed: {
+    height() {
+      return realPx(35)
+    },
+    threshold() {
+      return realPx(55)
+    }
+
+  },
   watch: {
-    offsetY(v){//实现书签下拉算法
+    offsetY(v){//实现书签下拉算法，三个状态，下拉，吸顶，临界值，书签添加成功
+      if (v >= this.height && v< this.threshold) {
+        this.beforeThreshold(v) // z状态2
+      } else if (v >= this.threshold) {
+        this.afterThreshold(v) // z状态3
+      } else if (v > 0 && v < this.height){ //状态1
+        this.beforeHeight(v)
+      } else if (v === 0) {
+        this.restore()
+      }
+    }
+  },
+  methods: {
+    restore() {
+      setTimeout(() => {
+        this.$refs.bookmark.style.top = `${-this.height}px`
+        this.$refs.iconDown.style.transform = 'rotate(0deg)'
+      },200) //书签归为操作，归为的时候，延迟200ms进行
+    },
+    beforeHeight(){ //状态1
+      if (this.isBookmark) {
+        this.text = this.$t('book.pulldownDeleteMark')
+        this.color = BLUE
+      } else {
+        this.text = this.$t('book.pulldownAddMark')
+        this.color = WHITE
+      }
+    },
+    beforeThreshold(v) {
+      //状态2：未到达临界状态
+      this.$refs.bookmark.style.top = `${-v}px`
+      this.beforeHeight() //状态1和状态2代码重复部分
+      //图标旋转
+      const iconDown = this.$refs.iconDown
+      if (iconDown.style.transform === 'rotate(180deg)') {
+        iconDown.style.transform = 'rotate(0deg)'
+      }
+    },
+    afterThreshold(v){
+      //状态3： 超越临界状态
+      this.$refs.bookmark.style.top = `${-v}px`
+      if (this.isBookmark) {
+        this.text = this.$t('book.releasedownDeleteMark')
+        this.color = WHITE
+      } else {
+        this.text = this.$t('book.releaseAddMark')
+        this.color = BLUE
+      }
+      //图标旋转
+      const iconDown = this.$refs.iconDown
+      if (iconDown.style.transform === '' || iconDown.style.transform === 'rotate(0deg)') {
+        iconDown.style.transform = 'rotate(180deg)'
+      }
     }
   },
   data () {
     return {
-      text: this.$t('book.pulldownAddMark')
+      text: '',    //根据下拉事件来进行优化
+      color: WHITE //默认白色
     }
   }
 }
