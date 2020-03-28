@@ -6,7 +6,7 @@
         </div>
         <div class="ebook-bookmark-text">{{text}}</div>
       </div>
-      <div class="ebook-bookmark-icon-wrapper">
+      <div class="ebook-bookmark-icon-wrapper" :style="isFixed ? fixedStyle : {}">
         <book-mark :color="color" :width="15" :height="35"></book-mark>
       </div>
     </div>
@@ -31,11 +31,20 @@ export default {
     },
     threshold() {
       return realPx(55)
+    },
+    fixedStyle() {
+      return {
+        position:'fixed',
+        top: 0,
+        right: `${(window.innerWidth - this.$refs.bookmark.clientWidth) / 2}px`
+      }
     }
-
   },
   watch: {
     offsetY(v){//实现书签下拉算法，三个状态，下拉，吸顶，临界值，书签添加成功
+      if (!this.bookAvailable || this.menuVisible || this.settingVisible >= 0){
+        return //排除了很多监听事件
+      }
       if (v >= this.height && v< this.threshold) {
         this.beforeThreshold(v) // z状态2
       } else if (v >= this.threshold) {
@@ -48,19 +57,30 @@ export default {
     }
   },
   methods: {
-    restore() {
+    addBookMark(){},
+    removeBookMark(){},
+    restore() {//状态4
       setTimeout(() => {
         this.$refs.bookmark.style.top = `${-this.height}px`
         this.$refs.iconDown.style.transform = 'rotate(0deg)'
       },200) //书签归为操作，归为的时候，延迟200ms进行
+      if(this.isFixed){
+        this.setIsBookmark(true) //是书签
+        this.addBookMark()
+      } else {
+        this.setIsBookmark(false)
+        this.removeBookMark()
+      }
     },
     beforeHeight(){ //状态1
-      if (this.isBookmark) {
+      if (this.isBookmark) { //是书签
         this.text = this.$t('book.pulldownDeleteMark')
         this.color = BLUE
-      } else {
+        this.isFixed = true
+      } else { //不是书签
         this.text = this.$t('book.pulldownAddMark')
         this.color = WHITE
+        this.isFixed = false
       }
     },
     beforeThreshold(v) {
@@ -76,12 +96,14 @@ export default {
     afterThreshold(v){
       //状态3： 超越临界状态
       this.$refs.bookmark.style.top = `${-v}px`
-      if (this.isBookmark) {
-        this.text = this.$t('book.releasedownDeleteMark')
+      if (this.isBookmark) { //是书签
+        this.text = this.$t('book.releaseDeleteMark')
         this.color = WHITE
-      } else {
+        this.isFixed = false
+      } else { // 不是书签
         this.text = this.$t('book.releaseAddMark')
-        this.color = BLUE
+        this.color = BLUE // 删除之后，书签图标消失
+        this.isFixed = true
       }
       //图标旋转
       const iconDown = this.$refs.iconDown
@@ -93,7 +115,8 @@ export default {
   data () {
     return {
       text: '',    //根据下拉事件来进行优化
-      color: WHITE //默认白色
+      color: WHITE, //默认白色
+      isFixed: false
     }
   }
 }
