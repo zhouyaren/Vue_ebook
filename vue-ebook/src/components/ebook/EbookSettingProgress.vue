@@ -36,18 +36,6 @@ import { ebookMixin } from '../../utils/mixin'
 export default {
   name: 'EbookSettingProgress',
   mixins: [ebookMixin],
-  computed: {
-    // eslint-disable-next-line vue/return-in-computed-property
-    getSectionName () {
-      // if (this.section) {
-      //   const sectionInfo = this.currentBook.section(this.section)
-      //   if (sectionInfo && sectionInfo.href && this.currentBook && this.currentBook.navigation) {
-      //     return this.currentBook.navigation.get(sectionInfo.href).label
-      //   }
-      // }
-      return this.section ? this.navigation[this.section].label : ''
-    }
-  },
   methods: {
     onProgressChange (progress) {
       this.setProgress(progress).then(() => {
@@ -107,7 +95,7 @@ export default {
    position: absolute;
    bottom: px2rem(48);
    left: 0;
-   z-index: 101;
+   z-index: 252;
    width: 100%;
    height: px2rem(90);
    background: white;

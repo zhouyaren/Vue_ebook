@@ -33,6 +33,15 @@ export const ebookMixin = {
       'shelfCategory',
       'currentType'
     ]),
+    getSectionName () {
+      // if (this.section) {
+      //   const sectionInfo = this.currentBook.section(this.section)
+      //   if (sectionInfo && sectionInfo.href && this.currentBook && this.currentBook.navigation) {
+      //     return this.currentBook.navigation.get(sectionInfo.href).label
+      //   }
+      // }
+      return this.section ? this.navigation[this.section].label : ''
+    },
     themeList () { // 主题设置
       return themeList(this)
     }

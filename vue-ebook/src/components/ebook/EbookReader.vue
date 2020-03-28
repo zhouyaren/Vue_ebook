@@ -4,7 +4,10 @@
     <div class="ebook-reader-mask"
     @click="onMaskClick"
     @touchmove="move"
-    @touchend="End"></div>
+    @touchend="End"
+    @mousedown.left="onMouseEnter"
+    @mousemove.left="onMouseMove"
+    @mouseup.left="onMouseEnd"></div>
   </div>
 </template>
 
@@ -26,6 +29,46 @@ global.ePub = Epub
 export default {
   mixins: [ebookMixin],
   methods: {
+    // 1- 鼠标进入
+    // 2- 鼠标进入后的移动
+    // 3- 鼠标从移动状态松手
+    // 4- 鼠标还原
+    onMouseEnd(e){
+      if (this.mouseState === 2) {
+        this.setOffsetY(0)
+        this.firstOffsetY = null
+        this.mouseState = 3
+      } else {
+        this.mouseState = 4 //点击了一下，没有进行移动，松开也被认为是可以处理的
+      }
+      const time = e.timestamp - this.mouseStartTime
+      if (time < 100) {
+        this.mouseState = 4 //如果稍微了一点移动，但是时间非常短，则判定为是点击事件
+      }
+      e.preventDefault()
+      e.stopPropagation()
+    },
+    onMouseMove(e){
+      if (this.mouseState === 1) {
+        this.mouseState = 2
+      } else if (this.mouseState === 2) {
+        let offSetY = 0
+        if (this.firstOffsetY) {
+          offSetY = e.clientY - this.firstOffsetY
+          this.setOffsetY(offSetY)
+        } else {
+          this.firstOffsetY = e.clientY
+        }
+      }
+      e.preventDefault()
+      e.stopPropagation()
+    },
+    onMouseEnter(e){
+      this.mouseState = 1
+      this.mouseStartTime = e.timeStamp //获取事件开始时间
+      e.preventDefault()
+      e.stopPropagation()
+    },
     move (e) {
       let offsetY = 0
       if (this.firstOffsetY) {
@@ -34,7 +77,7 @@ export default {
       } else { // firstOffsetY不存在则把刚开始的点放在 e.changedTouches[0].clientY
         this.firstOffsetY = e.changedTouches[0].clientY
       }
-      e.preventDefault()
+      e.preventDefault()  //禁用原来的方法
       e.stopPropagation()
     },
     End (e) {
@@ -42,6 +85,9 @@ export default {
       this.firstOffsetY = null
     },
     onMaskClick (e) {
+      if (this.mouseState && (this.mouseState === 2 || this.mouseState === 3)){
+        return
+      }
       const offsetx = e.offsetX
       const width = window.innerWidth
       if (offsetx > 0 && offsetx < 0.3 * width) {

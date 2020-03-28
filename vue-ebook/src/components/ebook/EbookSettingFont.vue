@@ -62,7 +62,7 @@ export default {
     display: flex;
     flex-direction: column;
     left: 0;
-    z-index: 101;
+    z-index: 252;
     width: 100%;
     height: px2rem(90);
     background: white;

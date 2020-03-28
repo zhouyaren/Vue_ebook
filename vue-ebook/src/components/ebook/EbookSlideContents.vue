@@ -20,8 +20,12 @@
         <img :src="cover" class="slide-contents-book-img">
       </div>
       <div class="slide-contents-book-info-wrapper">
-        <div class="slide-contents-book-title">{{metadata.title}}</div>
-        <div class="slide-contents-book-creator">{{metadata.creator}}</div>
+        <div class="slide-contents-book-title">
+          <span class="slide-contents-book-title-text">{{metadata.title}}</span>
+        </div>
+        <div class="slide-contents-book-creator">
+          <span class="slide-contents-book-creator-text">{{metadata.creator}}</span>
+        </div>
       </div>
       <div class="slide-contents-book-progress-wrapper">
         <div class="slide-contens-book-progress">
@@ -171,16 +175,24 @@ export default {
       padding: 0 px2rem(10);
       box-sizing: border-box;
       .slide-contents-book-title{
-        width: px2rem(153.75);
+        /*width: px2rem(153.75);*/
+        @include left;
+        .slide-contents-book-title-text{
+          @include ellipsis2(3);
+        }
         font-size: px2rem(14);
         line-height: px2rem(16);
-        @include ellipsis2(3);
       }
       .slide-contents-book-creator{
-        width: px2rem(153.75);
+        /*width: px2rem(153.75);*/
         font-size: px2rem(12);
         margin-top: px2rem(5);
-        @include ellipsis; /*省略时候，要指定宽度*/
+        line-height: px2rem(16);
+        box-sizing: border-box;
+        @include left;
+        .slide-contents-book-creator-text{ //在全屏的时候，用flex布局来实现自适应
+          @include ellipsis2(1); /*省略时候，要指定宽度*/
+        }
       }
     }
     .slide-contents-book-progress-wrapper{

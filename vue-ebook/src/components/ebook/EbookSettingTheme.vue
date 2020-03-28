@@ -42,7 +42,7 @@ export default {
     position: absolute;
     bottom: px2rem(48);
     left: 0;
-    z-index: 190;
+    z-index: 251;
     width: 100%;
     height: px2rem(90);
     background-color: #ffffff;
