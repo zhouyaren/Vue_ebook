@@ -20,5 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background: rgba(143, 144, 146, 0.95);
 }
 </style>
