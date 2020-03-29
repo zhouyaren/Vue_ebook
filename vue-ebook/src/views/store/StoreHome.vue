@@ -1,7 +1,7 @@
 <template>
     <div class="storehome">
       <search-bar></search-bar>
-      <scroll :top="94" @onScroll="onscroll">
+      <scroll :top="scrollTop" @onScroll="onscroll" ref="scroll">
         <div>1111111111111111111</div>
         <div>1111111111111111111</div>
         <div>1111111111111111111</div>
@@ -27,9 +27,20 @@
       Scroll,
       SearchBar
     },
+    data () {
+      return {
+        scrollTop: 94
+      }
+    },
     methods: {
       onscroll(offsetY) { //该组件进行捕捉。并不处理
         this.setOffsetY(offsetY)
+        if (offsetY > 0) {
+          this.scrollTop = 52
+        } else {
+          this.scrollTop = 94
+        }
+        this.$refs.scroll.refresh()
       }
     }
   }

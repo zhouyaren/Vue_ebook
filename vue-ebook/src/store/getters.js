@@ -25,6 +25,6 @@ const book = {
   shelfSelected: state => state.store.shelfSelected,
   shelfTitleVisible: state => state.store.shelfTitleVisible,
   shelfCategory: state => state.store.shelfCategory,
-  currentType: state => state.store.currentType
+  currentType: state => state.store.currentType,
 }
 export default book

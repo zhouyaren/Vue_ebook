@@ -1,4 +1,6 @@
 $ratio: 375 / 10;
+$animationTime: .2s;
+$animationType: linear;
 
 @function px2rem($px){
     @return $px / $ratio + rem;
@@ -37,6 +39,13 @@ $ratio: 375 / 10;
     white-space: nowrap;
 }
 
+@mixin columnLeft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 @mixin ellipsis2($line) {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -57,3 +66,4 @@ $ratio: 375 / 10;
     font-size: px2rem(18);
     font-weight: bold;
 }
+
