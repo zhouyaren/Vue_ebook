@@ -136,9 +136,9 @@ export const ebookMixin = {
 
 export const storeHomeMixin = {
   computed: {
-    ...mapGetters(['offsetY','hotSearchOffsetY'])
+    ...mapGetters(['offsetY','hotSearchOffsetY','flapCardVisible'])
   },
   methods: {
-    ...mapActions(['setOffsetY', 'setHotSearchOffsetY'])
+    ...mapActions(['setOffsetY', 'setHotSearchOffsetY','setFlapCardVisible'])
   }
 }
