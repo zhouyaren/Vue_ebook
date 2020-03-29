@@ -133,3 +133,12 @@ export const ebookMixin = {
     // 实现actions复用
   }
 }
+
+export const storeHomeMixin = {
+  computed: {
+    ...mapGetters(['offsetY'])
+  },
+  methods: {
+    ...mapActions(['setOffsetY'])
+  }
+}
