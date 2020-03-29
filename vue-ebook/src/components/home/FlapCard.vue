@@ -1,6 +1,6 @@
 <template>
   <div class="flap-card-wrapper" v-show="flapCardVisible">
-    <div class="flap-card-bg">
+    <div class="flap-card-bg" :class="{'animation': runFlapCardAnimation}">
       <div class="flap-card" v-for="(item, index) in flapCardList" :key="index" :style="{zIndex:item.zIndex}">
         <div class="flap-card-circle">
           <div class="flap-card-semi-circle flap-card-semi-circle-left" :style="semiCircleStyle(item, 'left')" ref="left"></div>
@@ -26,12 +26,27 @@
         flapCardList,
         front:0,
         back:1,
-        intervalTime:25
+        intervalTime:25,
+        runFlapCardAnimation: false
+      }
+    },
+    watch: {
+      flapCardVisible(v){//监听器监听属性
+        if (v){
+          this.runAnimation()
+        }
       }
     },
     methods: {
+      runAnimation(){
+        this.runFlapCardAnimation = true //控制登场动画之后，执行翻转动画
+        setTimeout(() => {
+          this.startFlapCardAnimation()// 先把这个翻转动画注释掉，写另一个
+        },300)
+      },
       close(){
         this.setFlapCardVisible(false)
+        this.stopAnimation()
       },
       semiCircleStyle(item, dir){
         return {
@@ -101,7 +116,7 @@
       },
       startFlapCardAnimation() {
         this.prepare()//左右侧的半圆进行重叠，然后进行转动
-        setInterval(() => {
+        this.task = setInterval(() => {
           this.flapCardRotate()
         },this.intervalTime)
       },
@@ -110,11 +125,25 @@
         backFlapCard.rotateDegree = 180
         backFlapCard._g = backFlapCard.g - 5*9
         this.rotate(this.back, 'back')
+      },
+      reset(){ //所有的卡片都争正确归位
+        this.front = 0
+        this.back = 1
+        this.flapCardList.forEach((item, index)=> {
+          item.zIndex = 100 - index
+          item._g = item.g
+          item.rotateDegree = 0
+          this.rotate(index, 'front')
+          this.rotate(index,'back')
+        })
+      },
+      stopAnimation(){
+        if (this.task){ // 清除定时任务
+          clearInterval(this.task)
+        }
+        this.reset()
       }
     },
-    mounted () {
-      this.startFlapCardAnimation()
-    }
   }
 </script>
 
@@ -137,6 +166,27 @@
       height: px2rem(64);
       border-radius: px2rem(5);
       background-color: white;
+      &.animation{
+        animation: flap-card-move .3s ease-in; //infinite 无限次的循环
+      }
+      @keyframes flap-card-move {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        75% {
+          transform: scale(1.9);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
       .flap-card{
         @include absCenter;
         /*background-color: orange;*/
