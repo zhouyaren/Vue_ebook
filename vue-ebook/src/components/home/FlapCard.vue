@@ -131,6 +131,9 @@
         this.task = setInterval(() => {
           this.flapCardRotate()
         },this.intervalTime)
+        setTimeout(() => {
+          this.stopAnimation() //模拟2.5s之后停止动画，弹出一本推荐图书
+        },2500)
       },
       prepare(){
         const backFlapCard = this.flapCardList[this.back]
@@ -150,6 +153,7 @@
         })
       },
       stopAnimation(){
+        this.runFlapCardAnimation = false
         if (this.task){ // 清除定时任务
           clearInterval(this.task)
         }
@@ -185,8 +189,10 @@
       height: px2rem(64);
       border-radius: px2rem(5);
       background-color: white;
+      transform: scale(0); //默认状态下的css
+      opacity: 0;  //默认状态下的css
       &.animation{
-        animation: flap-card-move .3s ease-in; //infinite 无限次的循环
+        animation: flap-card-move .3s ease-in both; //infinite 无限次的循环  both 这个参数将执行动画的主题维持在100%的状态
       }
       @keyframes flap-card-move {
         0% {
