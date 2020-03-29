@@ -7,6 +7,9 @@
           <div class="flap-card-semi-circle flap-card-semi-circle-right" :style="semiCircleStyle(item, 'right')" ref="right"></div>
         </div>
       </div>
+      <div class="point-wrapper">
+        <div class="point" :class="{'animation': runPointAnimation}" v-for="item in pointList" :key="item"></div>
+      </div>
     </div>
     <div class="close-btn-wrapper" @click="close">
       <span class="icon-close"></span>
@@ -27,7 +30,9 @@
         front:0,
         back:1,
         intervalTime:25,
-        runFlapCardAnimation: false
+        runFlapCardAnimation: false,
+        pointList: null,
+        runPointAnimation: false
       }
     },
     watch: {
@@ -42,6 +47,7 @@
         this.runFlapCardAnimation = true //控制登场动画之后，执行翻转动画
         setTimeout(() => {
           this.startFlapCardAnimation()// 先把这个翻转动画注释掉，写另一个
+          this.startPointAnimation()  //登场动画出现之后，出现烟花
         },300)
       },
       close(){
@@ -114,6 +120,12 @@
         })
         this.prepare()
       },
+      startPointAnimation(){
+        this.runPointAnimation = true
+        setTimeout(() => {
+          this.runPointAnimation = false
+        },750)
+      },
       startFlapCardAnimation() {
         this.prepare()//左右侧的半圆进行重叠，然后进行转动
         this.task = setInterval(() => {
@@ -144,11 +156,18 @@
         this.reset()
       }
     },
+    created () {
+      this.pointList = []
+      for(let i =0; i<18; i++){
+        this.pointList.push(`point${i}`)
+      }
+    }
   }
 </script>
 
 <style lang="scss" rel="stylesheet/scss" scoped>
   @import "../../assets/styles/global";
+  @import "../../assets/styles/flapCard";
   .flap-card-wrapper{
     position: absolute;
     top: 0;
@@ -214,6 +233,21 @@
               background-position: center left;
               transform-origin: left;
             }
+        }
+      }
+      .point-wrapper{
+        z-index:1500;
+        @include absCenter;
+        .point{
+          border-radius: 50%;
+          @include absCenter;
+          &.animation {
+            @for $i from 1 to length($moves) {//用scss中的for循环设置每个小球的样式
+              &:nth-child(#{$i}) {//设定每个child元素的值
+                @include move($i)
+              }
+            }
+          }
         }
       }
     }
