@@ -54,6 +54,13 @@ $animationType: linear;
     margin: auto;
 }
 
+@mixin columnTop {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
 @mixin ellipsis2($line) {
     display: -webkit-box;
     -webkit-box-orient: vertical;
