@@ -8,8 +8,6 @@ const homeData = require('./src/mock/bookHome')
 const shelfData = require('./src/mock/bookShelf')
 const listData = require('./src/mock/bookList')
 const flatListData = require('./src/mock/bookFlatList')
-// const homeData = require('./src/mock/bookCategoryList')
-
 //模拟接口
 module.exports = {
   lintOnSave: false,
