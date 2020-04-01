@@ -1,3 +1,4 @@
+@import "mixin";
 .slide-down-enter, .slide-down-leave-to {
     transform: translate3d(0, -100%, 0)
   }
