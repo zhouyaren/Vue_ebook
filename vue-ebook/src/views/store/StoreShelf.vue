@@ -1,14 +1,22 @@
 <template>
     <div class="store-shelf">
       <shelf-title></shelf-title>
-      <scroll class="store-shelf-scroll-wrapper" :top="0" @onScroll="onscroll">
+      <scroll class="store-shelf-scroll-wrapper"
+              :top="0"
+              @onScroll="onscroll"
+              :bottom="scollBottom"
+              ref="scroll">
         <shelf-search></shelf-search>
         <shelf-list></shelf-list>
+        <shelf-footer></shelf-footer>
       </scroll>
     </div>
 </template>
 
 <script>
+  import ShelfFooter from '../../components/shelf/ShelfFooter'
+
+
   import ShelfTitle from '../../components/shelf/ShelfTitle'
   import { storeShelfMixin } from '../../utils/mixin'
   import Scroll from '../../components/common/Scroll'
@@ -24,7 +32,21 @@
       ShelfSearch,
       Scroll,
       ShelfTitle,
-      ShelfList
+      ShelfList,
+      ShelfFooter
+    },
+    watch:{
+      isEditMode(isEditMode){
+        this.scollBottom = isEditMode ? 48 : 0
+        this.$nextTick(()=> {  //等界面显示完成之后，在刷新scroll组件
+          this.$refs.scroll.refresh()
+        })
+      }
+  },
+    data(){
+      return{
+        scollBottom: 0
+      }
     },
     methods:{
       onscroll(offsetY){

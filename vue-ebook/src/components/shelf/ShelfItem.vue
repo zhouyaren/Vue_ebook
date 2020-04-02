@@ -5,7 +5,9 @@
                class="shelf-item-comp"
                :class="{'is-edit': isEditMode && data.type === 2}"
                :data="data"></component>
-    <div class="icon-selected" v-show="isEditMode && data.type === 1">
+    <div class="icon-selected"
+         :class="{'is-selected': data.selected}"
+         v-show="isEditMode && data.type === 1">
     </div>
   </div>
 </template>
@@ -37,12 +39,21 @@
     },
     methods: {
       onItemClick(){
-        if (this.data.type === 1){
-          this.showBookDetail(this.data)
-        }else if(this.data.type === 2){
-
+        if(this.isEditMode){
+          this.data.selected = !this.data.selected
+          if (this.data.selected){
+            this.shelfSelected.pushWithoutDuplicate(this.data)
+          }else{//要取消
+            this.setShelfSelected(this.shelfSelected.filter(item => item.id !== this.data.id))
+          }
         }else{
-          gotoStoreHome(this)
+          if (this.data.type === 1){
+            this.showBookDetail(this.data)
+          }else if(this.data.type === 2){
+
+          }else{
+            gotoStoreHome(this)
+          }
         }
       }
     }
@@ -70,6 +81,9 @@
     right: px2rem(2);
     font-size: px2rem(18);
     color: rgba(0, 0, 0, .4);
+    &.is-selected{
+      color: $color-blue;
+    }
   }
 }
 </style>
