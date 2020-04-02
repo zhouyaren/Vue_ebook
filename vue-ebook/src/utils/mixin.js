@@ -159,7 +159,8 @@ export const storeShelfMixin = {
       'isEditMode',
       'shelfList',
       'shelfSelected',
-      'shelfTitleVisible'
+      'shelfTitleVisible',
+      'offsetY'
     ])
   },
   methods: {
@@ -167,7 +168,17 @@ export const storeShelfMixin = {
       'setIsEditMode',
       'setShelfList',
       'setShelfSelected',
-      'setShelfTitleVisible'
-    ])
+      'setShelfTitleVisible',
+      'setOffsetY'
+    ]),
+    showBookDetail(book){
+      this.$router.push({
+        path: '/store/detail',
+        query:{
+          fileName: book.fileName,
+          category: book.categoryText
+        }
+      })
+    }
   }
 }

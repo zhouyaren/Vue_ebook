@@ -8,6 +8,12 @@ export function home () {
 }
 //这里的baseURL和我们的启动项目的url是一样的
 
+export function shelf () {
+  return axios({
+    method: 'get',
+    url: `${process.env.VUE_APP_BASE_URL}/book/shelf`
+  })
+}
 
 export function detail (book) {
   return axios({

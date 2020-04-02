@@ -1,3 +1,21 @@
+export function gotoStoreHome (vue) {
+  vue.$router.push({
+    path: '/store/home'
+  })
+}
+
+export function appandAddToShelf (list) {
+  list.push({
+    id: -1,
+    type: 3
+  })
+  return list
+}
+
+export function removeAddFromShelf (list) {
+  return list.filter(item => item.type !== 3)
+}
+
 export const categoryList = {
   'ComputerScience': 1,
   'SocialSciences': 2,
