@@ -8,6 +8,7 @@ import './assets/fonts/daysOne.css'
 import './assets/styles/global.scss'
 import './utils/boost'
 // import './mock'
+import './utils/create-api'
 
 Vue.config.productionTip = false
 

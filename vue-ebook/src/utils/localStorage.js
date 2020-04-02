@@ -9,6 +9,15 @@ export function setLocalStorage (key, value) {
   return localStorage.set(key, value)
 }
 
+export function saveBookShelf (shelf) {
+  return setLocalStorage('shelf', shelf)
+}
+
+export function getBookShelf () {
+  return getLocalStorage('shelf')
+}
+
+
 export function getLocalStorage (key) {
   return localStorage.get(key)
 }
