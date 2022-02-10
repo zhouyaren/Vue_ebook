@@ -11,7 +11,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "epubjs": "^0.3.85",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "vue": "^2.6.11",
     "vue-create-api": "^0.2.3",
     "vue-i18n": "^8.15.5",
@@ -34,7 +34,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.1.2",
     "mockjs": "^1.1.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11"
   }
